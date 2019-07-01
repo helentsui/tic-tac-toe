@@ -1,0 +1,68 @@
+$cell-dimensions: 100px;
+
+h1 {
+    text-align: center;
+}
+
+.error {
+    color: red;
+}
+
+.winningMessage {
+    font-size: 30px;
+    color: green;
+}
+
+table {
+    table-layout: fixed;
+    max-width: 1280px;
+    tr {
+        &:first-child {
+            td {
+                border-top: none;
+            }
+        }
+        &:last-child {
+            td {
+                border-bottom: none;
+            }
+        }
+    }
+    td {
+        border: 1px solid black;
+        cursor: pointer;
+        font-size: 0;
+        width: $cell-dimensions;
+        height: $cell-dimensions;
+        text-align: center;
+        padding: 4px;
+        &:first-child {
+            border-left: none;
+        }
+        &:last-child {
+            border-right: none;
+        }
+        &.x::after {
+            content: url(../vectors/xIcon.svg);
+        }
+        &.o::after {
+            content: '';
+            background-image: url(../vectors/oIcon.svg);
+            width: $cell-dimensions;
+            height: $cell-dimensions;
+            background-size: contain;
+            display: block;
+        }
+    }
+    border-collapse: collapse;
+}
+
+input {
+    height: 40px;
+    margin-right: 16px;
+}
+
+button {
+    height: 40px;
+}
+
