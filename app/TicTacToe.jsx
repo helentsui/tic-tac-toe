@@ -110,14 +110,14 @@ handleCellClick(e) {
         const { nextValue, winner } = this.state;
         if (!winner) {
             const cell = e.target;
-            if (cell.innerText) {
+            if (cell.classList.contains('o') || cell.classList.contains('x')) {
                 this.setState({
                     errorMessage: 'You can only click on empty cells!'
                 });
             }
             else {
-                const currentCell = [cell.cellIndex, cell.parentElement.rowIndex];
-                cell.innerText = nextValue;
+                const td = cell.parentElement;
+                const currentCell = [td.cellIndex, td.parentElement.rowIndex];
                 cell.classList.add(nextValue);
                 this.toggleValue(currentCell);
             }
@@ -171,11 +171,10 @@ handleCellClick(e) {
     }
 
     resetBoard() {
-        let tableData = document.getElementsByTagName('td');
+        let tableData = document.getElementsByClassName('tdContent');
         if (tableData.length) {
             tableData = Array.from(tableData);
             tableData.forEach(cell => {
-                cell.innerText = '';
                 cell.classList.remove('x');
                 cell.classList.remove('o');
             });
@@ -193,7 +192,7 @@ handleCellClick(e) {
         const tableRows = [];
         const tableData = [];
         for (let i = 0; i < this.state.boardSize; i++) {
-            tableData.push(<td key={`td-${i}`} onClick={this.handleCellClick}></td>)
+            tableData.push(<td key={`td-${i}`}><div onClick={this.handleCellClick} className='tdContent'></div></td>)
             tableRows.push(<tr key={`tr-${i}`}>{tableData}</tr>);
         }
         return tableRows;

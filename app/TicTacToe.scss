@@ -36,22 +36,26 @@ table {
         height: $cell-dimensions;
         text-align: center;
         padding: 4px;
+        div {
+            height: $cell-dimensions;
+            width: $cell-dimensions;
+            &.x::after {
+                content: url(../vectors/xIcon.svg);
+            }
+            &.o::after {
+                content: '';
+                background-image: url(../vectors/oIcon.svg);
+                width: $cell-dimensions;
+                height: $cell-dimensions;
+                background-size: contain;
+                display: block;
+            }
+        }
         &:first-child {
             border-left: none;
         }
         &:last-child {
             border-right: none;
-        }
-        &.x::after {
-            content: url(../vectors/xIcon.svg);
-        }
-        &.o::after {
-            content: '';
-            background-image: url(../vectors/oIcon.svg);
-            width: $cell-dimensions;
-            height: $cell-dimensions;
-            background-size: contain;
-            display: block;
         }
     }
     border-collapse: collapse;
