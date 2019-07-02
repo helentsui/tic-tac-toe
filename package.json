@@ -1,21 +1,21 @@
 {
-  "name": "lucnh",
+  "name": "tic-tac-toe",
   "version": "1.0.0",
-  "description": "Where should we eat lunch today?",
+  "description": "A simple game of Tic Tac Toe",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/helentsui/lucnh.git"
+    "url": "git+https://github.com/helentsui/tic-tac-toe"
   },
   "author": "Helen Tsui",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/helentsui/lucnh/issues"
+    "url": "https://github.com/helentsui/tic-tac-toe/issues"
   },
-  "homepage": "https://github.com/helentsui/lucnh#readme",
+  "homepage": "https://github.com/helentsui/tic-tac-toe#readme",
   "devDependencies": {
     "@babel/core": "^7.4.4",
     "@babel/preset-env": "^7.4.4",
