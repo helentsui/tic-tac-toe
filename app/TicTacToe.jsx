@@ -1,50 +1,36 @@
 import React, { Component } from 'react';
 import './TicTacToe.scss';
 
-const isVertical = (cells, boardSize) => {
-    for (let i = 0; i < cells.length; i++) {
-        let counter = 0;
-        let column = cells[i][0];
-        for (let j = 0; j < cells.length; j++) {
-            if (cells [j][0] === column) {
-                counter++;
-            }
-        }
-        if (counter === boardSize) {
+const isVertical = (cell, cells, boardSize) => {
+    const column = cell[0];
+    const cellsInSameColumn = cells.filter(cell => cell[0] === column);
+    if (cellsInSameColumn.length === boardSize) {
+        return true;
+    }
+    return false;
+}
+
+const isHorizontal = (cell, cells, boardSize) => {
+    const row = cell[1];
+    const cellsInSameRow = cells.filter(cell => cell[1] === row);
+    if (cellsInSameRow.length === boardSize) {
+        return true;
+    }
+    return false;
+}
+
+const isBackDiagonal = (cell, cells, boardSize) => {
+    if (cell[0] === cell[1]) {
+        const backDiagonalCells = cells.filter(cell => cell[0] === cell[1]);
+        if (backDiagonalCells.length === boardSize) {
             return true;
         }
     }
     return false;
 }
 
-const isHorizontal = (cells, boardSize) => {
-    for (let i = 0; i < cells.length; i++) {
-        let counter = 0;
-        let row = cells[i][1];
-        for (let j = 0; j < cells.length; j++) {
-            if (cells [j][1] === row) {
-                counter++;
-            }
-        }
-        if (counter === boardSize) {
-            return true;
-        }
-    }
-    return false;
-}
-
-const isDiagonal = (cells, boardSize) => {
-    let isBackDiagonal = false;
+const isForwardDiagonal = (cells, boardSize) => {
     let isForwardDiagonal = false;
-    let counter = 0;
-    for (let i = 0; i < cells.length; i++) {
-        if (cells[i][0] === cells[i][1]) {
-            counter++;
-        }
-    }
-    if (counter === boardSize) {
-        isBackDiagonal = true;
-    }
     let forwardDiagonalCounter = 0;
     let y = boardSize - 1;
     for (let x = 0; x < boardSize; x++) {
@@ -58,7 +44,7 @@ const isDiagonal = (cells, boardSize) => {
         isForwardDiagonal = true;
     }
 
-    return isBackDiagonal || isForwardDiagonal;
+    return isForwardDiagonal;
 }
 
 export default class TicTacToe extends Component {
@@ -78,12 +64,14 @@ export default class TicTacToe extends Component {
         this.toggleValue = this.toggleValue.bind(this);
         this.resetBoard = this.resetBoard.bind(this);
         this.startGame = this.startGame.bind(this);
+        this.isTie = this.isTie.bind(this);
     }
 
     startGame() {
         if (this.state.boardSize > 1) {
             this.setState({
-                startGame: true
+                startGame: true,
+                errorMessage: ''
             });
         }
         else {
@@ -99,14 +87,14 @@ export default class TicTacToe extends Component {
         });
     }
 
-    didSomeoneWin(cells) {
+    didSomeoneWin(cells, currentCell) {
         const { boardSize } = this.state;
-        if (isVertical(cells, boardSize) || isHorizontal(cells, boardSize) || isDiagonal(cells, boardSize)) {
+        if (isVertical(currentCell, cells, boardSize) || isHorizontal(currentCell, cells, boardSize) || isBackDiagonal(currentCell, cells, boardSize) || isForwardDiagonal(cells, boardSize)) {
             return true;
         }
     }
 
-handleCellClick(e) {
+    handleCellClick(e) {
         const { nextValue, winner } = this.state;
         if (!winner) {
             const cell = e.target;
@@ -132,19 +120,15 @@ handleCellClick(e) {
                 xCells: [...this.state.xCells, currentCell],
                 errorMessage: ''
             }, () => {
-                const { xCells, oCells } = this.state;
+                const { xCells } = this.state;
                 if (xCells.length >= parseInt(boardSize)) {
-                    if (this.didSomeoneWin(xCells)) {
+                    if (this.didSomeoneWin(xCells, currentCell)) {
                         this.setState({
                             winner: 'x'
                         });
                     }
                 }
-                if (xCells.length + oCells.length === boardSize * boardSize) {
-                    this.setState({
-                        winner: 'TIE'
-                    });
-                }
+                this.isTie();
             });
         }
         else {
@@ -153,19 +137,24 @@ handleCellClick(e) {
                 oCells: [...this.state.oCells, currentCell],
                 errorMessage: ''
             }, () => {
-                const { xCells, oCells } = this.state;
+                const { oCells } = this.state;
                 if (oCells.length >= parseInt(boardSize)) {
-                    if (this.didSomeoneWin(oCells)) {
+                    if (this.didSomeoneWin(oCells, currentCell)) {
                         this.setState({
                             winner: 'o'
                         });
                    }
                 }
-                if (xCells.length + oCells.length === boardSize * boardSize) {
-                    this.setState({
-                        winner: 'TIE'
-                    });
-                }
+                this.isTie();
+            });
+        }
+    }
+
+    isTie() {
+        const { xCells, oCells, boardSize } = this.state;
+        if (xCells.length + oCells.length === boardSize * boardSize) {
+            this.setState({
+                winner: 'TIE'
             });
         }
     }
@@ -225,7 +214,7 @@ handleCellClick(e) {
                     ) : (
                             <div>
                                 <p>Please enter a Tic Tac Toe board size.</p>
-                                <input onChange={this.setBoardSize} className="mr"/>
+                                <input onChange={this.setBoardSize} className="mr" type="number" />
                                 <button onClick={this.startGame}>Start</button>
                             </div>
                         )
